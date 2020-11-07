@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  percent: 9.99
+  merchant: one
+  quantity: 1
+
+two:
+  percent: 9.99
+  merchant: two
+  quantity: 1
