@@ -1,0 +1,8 @@
+<h1>Discount-<%= @discount.id %></h1>
+
+<section>
+  <p>Percentage: <%= (@discount.percent * 100).to_i %>%</p>
+  <p>Quantity: <%= @discount.quantity %></p>
+</section>
+
+<%= link_to 'Edit Discount', "/merchant/discounts/#{@discount.id}/edit" %>
