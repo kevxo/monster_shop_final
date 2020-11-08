@@ -19,6 +19,14 @@ class Merchant::DiscountsController < Merchant::BaseController
     end
   end
 
+  def show
+    @discount = Discount.find(params[:id])
+  end
+
+  def edit
+
+  end
+
   def discount_params
     params.permit(:percent, :quantity)
   end
