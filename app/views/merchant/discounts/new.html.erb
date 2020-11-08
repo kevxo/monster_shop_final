@@ -1,0 +1,11 @@
+<h1>New Discount</h1>
+
+<%= form_tag '/merchant/discounts' do %>
+  <%= label_tag :percent %>
+  <%=  text_field_tag :percent %>
+
+  <%= label_tag :quantity %>
+  <%= number_field_tag :quantity %>
+
+  <%= submit_tag 'Submit' %>
+<% end %>
