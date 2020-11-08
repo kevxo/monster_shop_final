@@ -2,7 +2,7 @@
 
 <%= form_tag "/merchant/discounts/#{@discount.id}", method: :patch do %>
   <%= label_tag :percent %>
-  <%= number_field_tag :percent, @discount.percent %>
+  <%= text_field_tag :percent, @discount.percent %>
 
   <%= label_tag :quantity %>
   <%= number_field_tag :quantity, @discount.quantity %>

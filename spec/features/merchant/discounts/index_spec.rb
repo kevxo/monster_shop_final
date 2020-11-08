@@ -26,5 +26,12 @@ RSpec.describe 'As a merchant employee' do
         expect(page).to have_content("Quantity: #{@discount2.quantity}")
       end
     end
+
+    it 'expect id to be a link to edit discount' do
+      visit '/merchant/discounts'
+      within "#discount-#{@discount1.id}" do
+        expect(page).to have_link(@discount1.id)
+      end
+    end
   end
 end

@@ -6,3 +6,7 @@
 </section>
 
 <%= link_to 'Edit Discount', "/merchant/discounts/#{@discount.id}/edit" %>
+
+<%= form_tag "/merchant/discounts/#{@discount.id}", method: :delete do %>
+  <%= submit_tag 'Delete Discount' %>
+<% end %>

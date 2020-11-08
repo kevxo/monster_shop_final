@@ -35,7 +35,13 @@ RSpec.describe 'As a merchant' do
       click_button 'Update Discount'
 
       expect(current_path).to eq("/merchant/discounts/#{@discount1.id}/edit")
-      expect(page).to have_content("#{@discount1.percent} already in use")
+      expect(page).to have_content("Discount Percent already in use or Discount Quantity already in use")
+
+      fill_in :quantity, with: @discount1.quantity
+      click_button 'Update Discount'
+
+      expect(current_path).to eq("/merchant/discounts/#{@discount1.id}/edit")
+      expect(page).to have_content("Discount Percent already in use or Discount Quantity already in use")
     end
   end
 end

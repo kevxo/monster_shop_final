@@ -10,7 +10,7 @@ class Merchant::DiscountsController < Merchant::BaseController
   def create
     merchant = current_user.merchant
     discount = merchant.discounts.new(discount_params)
-    if discount.quantity >= 5 && discount.percent < 1.00 && discount.percent > 0.00
+    if discount.percent && discount.quantity >= 5 && discount.percent < 1.00 && discount.percent > 0.00 && /^0.\d{1,2}$/.match?(discount.percent.to_s)
       discount.save
       redirect_to '/merchant/discounts'
     else
@@ -29,13 +29,21 @@ class Merchant::DiscountsController < Merchant::BaseController
 
   def update
     @discount = Discount.find(params[:id])
-    if @discount.percent != discount_params[:percent].to_f
+    if @discount.percent != discount_params[:percent].to_f && @discount.quantity != discount_params[:quantity].to_i
+      @discount.update(discount_params)
       flash[:notice] = "Discount Updated"
+      @discount.save
       redirect_to "/merchant/discounts/#{@discount.id}"
     else
-      flash[:error] = "#{@discount.percent} already in use"
+      flash[:error] = "Discount Percent already in use or Discount Quantity already in use"
       redirect_to "/merchant/discounts/#{@discount.id}/edit"
     end
+  end
+
+  def destroy
+    discount = Discount.find(params[:id])
+    discount.destroy
+    redirect_to '/merchant/discounts'
   end
 
   private
