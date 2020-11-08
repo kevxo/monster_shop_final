@@ -25,5 +25,19 @@ RSpec.describe 'As a merchant' do
       click_link 'Edit Discount'
       expect(current_path).to eq("/merchant/discounts/#{@discount1.id}/edit")
     end
+
+    it 'should see a button to delete discount' do
+      visit "/merchant/discounts/#{@discount1.id}"
+
+      expect(page).to have_button('Delete Discount')
+    end
+
+    it 'should delete discount' do
+      visit "/merchant/discounts/#{@discount1.id}"
+
+      click_on 'Delete Discount'
+
+      expect(current_path).to eq('/merchant/discounts')
+    end
   end
 end
