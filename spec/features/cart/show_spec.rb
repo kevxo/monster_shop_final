@@ -9,6 +9,10 @@ RSpec.describe 'Cart Show Page' do
       @ogre = @megan.items.create!(name: 'Ogre', description: "I'm an Ogre!", price: 20, image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTaLM_vbg2Rh-mZ-B4t-RSU9AmSfEEq_SN9xPP_qrA2I6Ftq_D9Qw', active: true, inventory: 5 )
       @giant = @megan.items.create!(name: 'Giant', description: "I'm a Giant!", price: 50, image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTaLM_vbg2Rh-mZ-B4t-RSU9AmSfEEq_SN9xPP_qrA2I6Ftq_D9Qw', active: true, inventory: 3 )
       @hippo = @brian.items.create!(name: 'Hippo', description: "I'm a Hippo!", price: 50, image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTaLM_vbg2Rh-mZ-B4t-RSU9AmSfEEq_SN9xPP_qrA2I6Ftq_D9Qw', active: true, inventory: 3 )
+      @discount1 = @megan.discounts.create(percent: 0.10, quantity: 5)
+      @discount2 = @megan.discounts.create(percent: 0.20, quantity: 5)
+      @discount3 = @brian.discounts.create(percent: 0.10, quantity: 5)
+      @discount4 = @brian.discounts.create(percent: 0.15, quantity: 10)
     end
 
     describe 'I can see my cart' do
@@ -166,6 +170,123 @@ RSpec.describe 'Cart Show Page' do
         expect(current_path).to eq('/cart')
         expect(page).to_not have_content("#{@hippo.name}")
         expect(page).to have_content("Cart: 0")
+      end
+    end
+
+    describe 'When I add enough quantity of a certain item' do
+      it 'should see automatically the discount for the item' do
+        visit item_path(@ogre)
+        click_button 'Add to Cart'
+        visit '/cart'
+
+        within "#item-#{@ogre.id}" do
+          click_button('More of This!')
+          click_button('More of This!')
+          click_button('More of This!')
+          click_button('More of This!')
+          expect(page).to have_link(@ogre.name)
+          expect(page).to have_content("Price: #{number_to_currency(@ogre.price)}")
+          expect(page).to have_content("Quantity: 5")
+          expect(page).to have_content("Discount: #{(@discount2.percent * 100).to_i}%")
+          expect(page).to have_content("Subtotal: #{number_to_currency((@ogre.price * 5) - (@discount2.percent * (@ogre.price * 5)))}")
+          expect(page).to have_content("Sold by: #{@megan.name}")
+          expect(page).to have_css("img[src*='#{@ogre.image}']")
+          expect(page).to have_link(@megan.name)
+          expect(page).to_not have_content("Discount: #{(@discount1.percent * 100).to_i}%")
+          expect(page).to_not have_content("Subtotal: #{number_to_currency((@ogre.price * 5) - (@discount1.percent * (@ogre.price * 5)))}")
+        end
+      end
+
+      it 'no discount for 5 different items' do
+        visit item_path(@ogre)
+        click_button 'Add to Cart'
+        visit item_path(@hippo)
+        click_button 'Add to Cart'
+        visit item_path(@hippo)
+        click_button 'Add to Cart'
+        visit item_path(@giant)
+        click_button 'Add to Cart'
+        visit item_path(@giant)
+        click_button 'Add to Cart'
+
+        visit '/cart'
+
+        expect(page).to have_content("Total: #{number_to_currency((@ogre.price * 1) + (@hippo.price * 2) + (@giant.price * 2))}")
+
+        within "#item-#{@ogre.id}" do
+          expect(page).to have_link(@ogre.name)
+          expect(page).to have_content("Price: #{number_to_currency(@ogre.price)}")
+          expect(page).to have_content("Quantity: 1")
+          expect(page).to have_content("Subtotal: #{number_to_currency(@ogre.price * 1)}")
+          expect(page).to have_content("Sold by: #{@megan.name}")
+          expect(page).to have_css("img[src*='#{@ogre.image}']")
+          expect(page).to have_link(@megan.name)
+        end
+
+        within "#item-#{@hippo.id}" do
+          expect(page).to have_link(@hippo.name)
+          expect(page).to have_content("Price: #{number_to_currency(@hippo.price)}")
+          expect(page).to have_content("Quantity: 2")
+          expect(page).to have_content("Subtotal: #{number_to_currency(@hippo.price * 2)}")
+          expect(page).to have_content("Sold by: #{@brian.name}")
+          expect(page).to have_css("img[src*='#{@hippo.image}']")
+          expect(page).to have_link(@brian.name)
+        end
+
+        within "#item-#{@giant.id}" do
+          expect(page).to have_link(@giant.name)
+          expect(page).to have_content("Price: #{number_to_currency(@giant.price)}")
+          expect(page).to have_content("Quantity: 2")
+          expect(page).to have_content("Subtotal: #{number_to_currency(@giant.price * 2)}")
+          expect(page).to have_content("Sold by: #{@megan.name}")
+          expect(page).to have_css("img[src*='#{@giant.image}']")
+          expect(page).to have_link(@megan.name)
+        end
+      end
+
+      it 'have two discounts for 2 different items from two different merchants' do
+        hippo = @brian.items.create!(name: 'Hippo', description: "I'm a Hippo!", price: 50, image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTaLM_vbg2Rh-mZ-B4t-RSU9AmSfEEq_SN9xPP_qrA2I6Ftq_D9Qw', active: true, inventory: 6 )
+        visit item_path(@ogre)
+        click_button 'Add to Cart'
+        visit item_path(hippo)
+        click_button 'Add to Cart'
+
+        visit '/cart'
+
+        within "#item-#{@ogre.id}" do
+          click_button('More of This!')
+          click_button('More of This!')
+          click_button('More of This!')
+          click_button('More of This!')
+          expect(page).to have_link(@ogre.name)
+          expect(page).to have_content("Price: #{number_to_currency(@ogre.price)}")
+          expect(page).to have_content("Quantity: 5")
+          expect(page).to have_content("Discount: #{(@discount2.percent * 100).to_i}%")
+          expect(page).to have_content("Subtotal: #{number_to_currency((@ogre.price * 5) - (@discount2.percent * (@ogre.price * 5)))}")
+          expect(page).to have_content("Sold by: #{@megan.name}")
+          expect(page).to have_css("img[src*='#{@ogre.image}']")
+          expect(page).to have_link(@megan.name)
+          expect(page).to_not have_content("Discount: #{(@discount1.percent * 100).to_i}%")
+          expect(page).to_not have_content("Subtotal: #{number_to_currency((@ogre.price * 5) - (@discount1.percent * (@ogre.price * 5)))}")
+        end
+
+        within "#item-#{hippo.id}" do
+          click_button('More of This!')
+          click_button('More of This!')
+          click_button('More of This!')
+          click_button('More of This!')
+          expect(page).to have_link(hippo.name)
+          expect(page).to have_content("Price: #{number_to_currency(hippo.price)}")
+          expect(page).to have_content("Quantity: 5")
+          save_and_open_page
+          expect(page).to have_content("Discount: #{(@discount3.percent * 100).to_i}%")
+          expect(page).to have_content("Subtotal: #{number_to_currency((hippo.price * 5) - (@discount3.percent * (hippo.price * 5)))}")
+          expect(page).to have_content("Sold by: #{@brian.name}")
+          expect(page).to have_css("img[src*='#{hippo.image}']")
+          expect(page).to have_link(@brian.name)
+          expect(page).to_not have_content("Discount: #{(@discount4.percent * 100).to_i}%")
+          expect(page).to_not have_content("Subtotal: #{number_to_currency((hippo.price * 5) - (@discount4.percent * (hippo.price * 5)))}")
+        end
       end
     end
   end

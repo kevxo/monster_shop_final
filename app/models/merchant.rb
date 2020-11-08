@@ -33,4 +33,8 @@ class Merchant < ApplicationRecord
   def order_items_by_order(order_id)
     order_items.where(order_id: order_id)
   end
+
+  def discount
+    discounts.order(percent: :desc).limit(1).first
+  end
 end
