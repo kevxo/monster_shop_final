@@ -24,10 +24,22 @@ class Merchant::DiscountsController < Merchant::BaseController
   end
 
   def edit
-
+    @discount = Discount.find(params[:id])
   end
 
-  def discount_params
-    params.permit(:percent, :quantity)
+  def update
+    @discount = Discount.find(params[:id])
+    if @discount.percent != discount_params[:percent].to_f
+      flash[:notice] = "Discount Updated"
+      redirect_to "/merchant/discounts/#{@discount.id}"
+    else
+      flash[:error] = "#{@discount.percent} already in use"
+      redirect_to "/merchant/discounts/#{@discount.id}/edit"
+    end
   end
+
+  private
+    def discount_params
+      params.permit(:percent, :quantity)
+    end
 end
