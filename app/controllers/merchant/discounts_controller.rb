@@ -12,6 +12,7 @@ class Merchant::DiscountsController < Merchant::BaseController
     discount = merchant.discounts.new(discount_params)
     if discount.percent && discount.quantity >= 5 && discount.percent < 1.00 && discount.percent > 0.00 && /^0.\d{1,2}$/.match?(discount.percent.to_s)
       discount.save
+      generate_flash(discount)
       redirect_to '/merchant/discounts'
     else
       flash[:error] = 'Could not create discount: quantity less than 5 or percent is incorrect'
