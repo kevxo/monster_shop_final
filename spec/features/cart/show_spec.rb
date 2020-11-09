@@ -278,13 +278,13 @@ RSpec.describe 'Cart Show Page' do
           expect(page).to have_link(hippo.name)
           expect(page).to have_content("Price: #{number_to_currency(hippo.price)}")
           expect(page).to have_content("Quantity: 5")
-          expect(page).to have_content("Discount: #{(@discount4.percent * 100).to_i}%")
-          expect(page).to have_content("Subtotal: #{number_to_currency((hippo.price * 5) - (@discount4.percent * (hippo.price * 5)))}")
+          expect(page).to have_content("Discount: #{(@discount3.percent * 100).to_i}%")
+          expect(page).to have_content("Subtotal: #{number_to_currency((hippo.price * 5) - (@discount3.percent * (hippo.price * 5)))}")
           expect(page).to have_content("Sold by: #{@brian.name}")
           expect(page).to have_css("img[src*='#{hippo.image}']")
           expect(page).to have_link(@brian.name)
-          expect(page).to_not have_content("Discount: #{(@discount3.percent * 100).to_i}%")
-          expect(page).to_not have_content("Subtotal: #{number_to_currency((hippo.price * 5) - (@discount3.percent * (hippo.price * 5)))}")
+          expect(page).to_not have_content("Discount: #{(@discount4.percent * 100).to_i}%")
+          expect(page).to_not have_content("Subtotal: #{number_to_currency((hippo.price * 5) - (@discount4.percent * (hippo.price * 5)))}")
         end
       end
     end

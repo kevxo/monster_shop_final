@@ -11,8 +11,8 @@
       <p>Quantity: <%= cart.count_of(item.id) %></p>
 
       <% if !item.merchant.discount(cart.count_of(item.id)).nil? %>
-          <p>Discount: <%= (item.merchant.discount(item.id).percent * 100).to_i %>%</p>
-          <p>Subtotal: <%= number_to_currency(cart.subtotal_of(item.id) - (item.merchant.discount(item.id).percent * (cart.subtotal_of(item.id)))) %></p>
+          <p>Discount: <%= (item.merchant.discount(cart.count_of(item.id)).percent * 100).to_i %>%</p>
+          <p>Subtotal: <%= number_to_currency(cart.subtotal_of(item.id) - (item.merchant.discount(cart.count_of(item.id)).percent * (cart.subtotal_of(item.id)))) %></p>
       <% else %>
           <p>Subtotal: <%= number_to_currency(cart.subtotal_of(item.id))%></p>
       <% end %>
