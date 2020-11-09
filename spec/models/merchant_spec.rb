@@ -36,7 +36,7 @@ RSpec.describe Merchant do
       @discount1 = @megan.discounts.create(percent: 0.10, quantity: 5)
       @discount2 = @megan.discounts.create(percent: 0.20, quantity: 10)
       @discount3 = @brian.discounts.create(percent: 0.10, quantity: 5)
-      @discount4 = @brian.discounts.create(percent: 0.20, quantity: 10)
+      @discount4 = @brian.discounts.create(percent: 0.20, quantity: 5)
     end
 
     it '.item_count' do
@@ -63,8 +63,10 @@ RSpec.describe Merchant do
     end
 
     it '.discount' do
-      expect(@megan.discount).to eq(@discount2)
-      expect(@brian.discount).to eq(@discount4)
+      item_quantity1 = 8
+      item_quantity2 = 8
+      expect(@megan.discount(item_quantity1)).to eq(@discount2)
+      expect(@brian.discount(item_quantity2)).to eq(@discount4)
     end
   end
 end
