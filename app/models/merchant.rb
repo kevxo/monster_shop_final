@@ -34,7 +34,8 @@ class Merchant < ApplicationRecord
     order_items.where(order_id: order_id)
   end
 
-  def discount
-    discounts.order(percent: :desc).limit(1).first
+  def discount(item_quantity)
+    require 'pry' ; binding.pry
+    discounts.where("quantity <= ?", item_quantity).order(percent: :desc).limit(1).first
   end
 end
