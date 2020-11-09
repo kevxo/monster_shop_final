@@ -16,3 +16,8 @@ brian.items.create!(name: 'Hippo', description: "I'm a Hippo!", price: 50, image
 @m_user = @merchant_1.users.create(name: 'Megan', address: '123 Main St', city: 'Denver', state: 'CO', zip: 80_218, email: 'megan@example.com', password: 'securepassword')
 @discount1 = @merchant_1.discounts.create(percent: 0.10, quantity: 5)
 @discount2 = @merchant_1.discounts.create(percent: 0.20, quantity: 10)
+@user = User.create!(name: 'Megan', address: '123 Main St', city: 'Denver', state: 'CO', zip: 80218, email: 'megan_1@example.com', password: 'securepassword')
+@merchant_2 =  Merchant.create!(name: 'Brians Bagels', address: '125 Main St', city: 'Denver', state: 'CO', zip: 80_218)
+@b_user = @merchant_2.users.create(name: 'Brian', address: '122 Main St', city: 'Denver', state: 'CO', zip: 80_218, email: 'brian@example.com', password: '123password')
+@discount3 = @merchant_2.discounts.create(percent: 0.10, quantity: 5)
+@discount4 = @merchant_2.discounts.create(percent: 0.20, quantity: 10)
