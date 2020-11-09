@@ -65,7 +65,7 @@ RSpec.describe Merchant do
     it '.discount' do
       item_quantity1 = 8
       item_quantity2 = 8
-      expect(@megan.discount(item_quantity1)).to eq(@discount2)
+      expect(@megan.discount(item_quantity1)).to eq(@discount1)
       expect(@brian.discount(item_quantity2)).to eq(@discount4)
     end
   end
