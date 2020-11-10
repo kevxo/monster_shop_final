@@ -28,5 +28,51 @@ RSpec.describe 'As a merchant employee' do
       expect(current_path).to eq('/merchant/discounts/new')
       expect(page).to have_content('Could not create discount: quantity less than 5 or percent is incorrect')
     end
+
+    it 'should flash message the discount percent is already in use.' do
+      visit '/merchant/discounts/new'
+
+      fill_in :percent, with: 0.10
+      fill_in :quantity, with: 8
+      click_button 'Submit'
+
+      visit '/merchant/discounts/new'
+
+      fill_in :percent, with: 0.10
+      fill_in :quantity, with: 10
+      click_button 'Submit'
+
+      expect(current_path).to eq('/merchant/discounts')
+      expect(page).to have_content("percent: [\"has already been taken\"]")
+    end
+
+    it 'should flash meassage when percent is filled in as a whole number instead of a decimal.' do
+      visit '/merchant/discounts/new'
+
+      fill_in :percent, with: 10
+      fill_in :quantity, with: 8
+      click_button 'Submit'
+
+      expect(current_path).to eq('/merchant/discounts/new')
+      expect(page).to have_content('Could not create discount: quantity less than 5 or percent is incorrect')
+    end
+
+    it 'should flash meassage when percent is filled in with a letter or special character.' do
+      visit '/merchant/discounts/new'
+
+      fill_in :percent, with: 'hello'
+      fill_in :quantity, with: 8
+      click_button 'Submit'
+
+      expect(current_path).to eq('/merchant/discounts/new')
+      expect(page).to have_content('Could not create discount: quantity less than 5 or percent is incorrect')
+
+      fill_in :percent, with: '!@%$'
+      fill_in :quantity, with: 8
+      click_button 'Submit'
+
+      expect(current_path).to eq('/merchant/discounts/new')
+      expect(page).to have_content('Could not create discount: quantity less than 5 or percent is incorrect')
+    end
   end
 end
